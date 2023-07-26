@@ -1,4 +1,4 @@
-import std/[os]
+import std/[os, enumerate]
 import boxy, opengl, windy
 
 const ProjectDir = currentSourcePath.parentDir
@@ -10,17 +10,19 @@ var LINE_HEIGHT = 40
 # var PAGE_HEIGHT = window.size.y
 var scrollOffset = vec2(0, 0)
 var gOffsetY: float32
+var frame: int
 
 window.onScroll = proc() =
-  # echo "onScroll ", window.scrollDelta
+
   scrollOffset.y = window.scrollDelta.y * LINE_HEIGHT.float32
+
 makeContextCurrent(window)
 
 loadExtensions()
 
 let bxy = newBoxy()
 
-var frame: int
+
 
 let typeface = readTypeface( ProjectDir / "assets/DejaVuSansMono.ttf")
 
@@ -54,14 +56,12 @@ const FontSize = 28
 window.onFrame = proc() =
   # Clear the screen and begin a new frame.
   bxy.beginFrame(window.size)
-
   bxy.drawRect(rect(vec2(0, 0), window.size.vec2), BackgroundColor)
-  var i = 0
   var yOffset: float32
   gOffsetY = gOffsetY + scrollOffset.y
-  for line in currentSourcePath.lines:
+
+  for i, line in enumerate(currentSourcePath.lines):
     if line.len == 0:
-      inc i
       continue
     yOffset = float32(FontSize * i) + scrollOffset.y
 
@@ -73,8 +73,6 @@ window.onFrame = proc() =
       FontSize,
       TextColor
     )
-    inc i
-  i = 0
   # End this frame, flushing the draw commands.
   bxy.endFrame()
   # Swap buffers displaying the new Boxy frame.
