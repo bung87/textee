@@ -57,17 +57,17 @@ window.onFrame = proc() =
   # Clear the screen and begin a new frame.
   bxy.beginFrame(window.size)
   bxy.drawRect(rect(vec2(0, 0), window.size.vec2), BackgroundColor)
-  var yOffset: float32
-  gOffsetY = gOffsetY + scrollOffset.y
+  var yOffset = window.scrollDelta.y
+
+  gOffsetY = gOffsetY + yOffset
 
   for i, line in enumerate(currentSourcePath.lines):
     if line.len == 0:
       continue
-    yOffset = float32(FontSize * i) + scrollOffset.y
 
     bxy.drawText(
       $i,
-      translate(vec2(100, yOffset)),
+      translate(vec2(100, float32(FontSize * i) + gOffsetY)),
       typeface,
       line,
       FontSize,
