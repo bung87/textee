@@ -28,7 +28,7 @@ var textBox = newTextBox(font, window.size.x, window.size.y)
 let source = readFile(currentSourcePath)
 textBox.text = source
 textBox.fontSize = FontSize
-textBox.lineHeight = FontSize
+textBox.lineHeight = 1.6
 
 var changed = true
 
@@ -69,11 +69,11 @@ window.onFrame = proc() =
 
     # bxy.drawImage(Source, vec2(0, textBox.scroll.y))
     let transform = translate(vec2(0, 0))
-    let bounds = vec2(window.size.x.float32, textBox.lineHeight * 2)
+    let bounds = vec2(window.size.x.float32, textBox.fontSize * textBox.lineHeight)
     
     for i, line in lines:
-      let y = i.float32 * textBox.lineHeight * 1.6
-      let arrangement = typeset(@[newSpan(line, textBox.font)], bounds)
+      let y = i.float32 * textBox.fontSize * textBox.lineHeight
+      let arrangement = typeset(@[newSpan(line, textBox.font)], bounds, vAlign = MiddleAlign)
       let globalBounds = arrangement.computeBounds(transform).snapToPixels()
       let
         textImage = newImage(bounds.x.int, bounds.y.int)
