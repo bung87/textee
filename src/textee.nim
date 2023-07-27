@@ -33,6 +33,18 @@ window.onScroll = proc() =
   textBox.scrollBy(window.scrollDelta.y)
   # textBox.adjustScroll()
 
+let transform = translate(vec2(100, 100))
+let
+  arrangement = textBox.layout(vec2(1280, 800) * 2)
+  globalBounds = arrangement.computeBounds(transform).snapToPixels()
+let
+  textImage = newImage(globalBounds.w.int, textBox.innerHeight)
+  imageSpace = translate(-globalBounds.xy) * transform
+
+# textBox.setCursor(0)
+textImage.fillText(arrangement, imageSpace)
+let imageKey = "source"
+bxy.addImage(imageKey, textImage)
 # Called when it is time to draw a new frame.
 window.onFrame = proc() =
   # Clear the screen and begin a new frame.
@@ -40,18 +52,6 @@ window.onFrame = proc() =
   
   bxy.drawRect(rect(vec2(0, 0), window.size.vec2), BackgroundColor)
   
-  let transform = translate(vec2(100, 100))
-  let
-    arrangement = textBox.layout(vec2(1280, 800) * 2)
-    globalBounds = arrangement.computeBounds(transform).snapToPixels()
-  let
-    textImage = newImage(globalBounds.w.int, textBox.innerHeight)
-    imageSpace = translate(-globalBounds.xy) * transform
-  
-  # textBox.setCursor(0)
-  textImage.fillText(arrangement, imageSpace)
-  let imageKey = "source"
-  bxy.addImage(imageKey, textImage)
   bxy.drawImage(imageKey, vec2(0, textBox.scroll.y))
   
   # End this frame, flushing the draw commands.
