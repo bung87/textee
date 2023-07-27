@@ -1,4 +1,4 @@
-import std/[os, enumerate]
+import std/[os, monotimes, times]
 import boxy, opengl, windy
 import textboxes
 
@@ -45,20 +45,34 @@ let
 textImage.fillText(arrangement, imageSpace)
 let imageKey = "source"
 bxy.addImage(imageKey, textImage)
+var previousTime = default(MonoTime)
+var availablePeriod = 1000 div 60
 # Called when it is time to draw a new frame.
 window.onFrame = proc() =
   # Clear the screen and begin a new frame.
   bxy.beginFrame(window.size)
+  let thisTime = getMonoTime()
+  var framePeriod:int
+  if previousTime == default(MonoTime):
+     framePeriod = 0
+  else:
+    framePeriod = (thisTime - previousTime).inMilliseconds.int
   
   bxy.drawRect(rect(vec2(0, 0), window.size.vec2), BackgroundColor)
   
   bxy.drawImage(imageKey, vec2(0, textBox.scroll.y))
-  
+
   # End this frame, flushing the draw commands.
   bxy.endFrame()
+
   # Swap buffers displaying the new Boxy frame.
   window.swapBuffers()
   inc frame
+  previousTime = thisTime
+  if framePeriod < availablePeriod:
+    let st = int(availablePeriod - framePeriod)
+    sleep(st)
+  
 
 while not window.closeRequested:
   pollEvents()
