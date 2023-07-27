@@ -5,16 +5,9 @@ const ProjectDir = currentSourcePath.parentDir
 let window = newWindow("textee", ivec2(1280, 800))
 window.size = (window.size.vec2 * window.contentScale).ivec2
 
-# var PIXEL_STEP  = 10
-var LINE_HEIGHT = 40
-# var PAGE_HEIGHT = window.size.y
-var scrollOffset = vec2(0, 0)
 var gOffsetY: float32
 var frame: int
 
-window.onScroll = proc() =
-
-  scrollOffset.y = window.scrollDelta.y * LINE_HEIGHT.float32
 
 makeContextCurrent(window)
 
@@ -57,7 +50,7 @@ window.onFrame = proc() =
   # Clear the screen and begin a new frame.
   bxy.beginFrame(window.size)
   bxy.drawRect(rect(vec2(0, 0), window.size.vec2), BackgroundColor)
-  var yOffset = window.scrollDelta.y
+  var yOffset = window.scrollDelta.y * window.contentScale
 
   gOffsetY = gOffsetY + yOffset
 
