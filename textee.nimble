@@ -13,3 +13,4 @@ bin           = @["textee"]
 requires "boxy"
 requires "opengl"
 requires "windy"
+requires "typography"
